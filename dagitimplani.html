@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dağıtım Planı</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBim-e8ACNnGEDBB6skS285NZJ9uGbAYyY"></script>
+    <script>
+      let map;
+      let locations = [
+        { lat: 6.245851, lng: -75.551119 },
+        { lat: 6.210360, lng: -75.558142 },
+        { lat: 6.206196, lng: -75.594696 },
+        { lat: 6.241217, lng: -75.609817 },
+        { lat: 6.260565, lng: -75.602900 },
+        { lat: 6.273987, lng: -75.634154 },
+        { lat: 6.280451, lng: -75.567053 },
+        { lat: 6.260764, lng: -75.496061 }, 
+        { lat: 6.245568, lng: -75.520717 },
+        { lat: 6.212864, lng: -75.480475 }, 
+      ];
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 6.249495, lng: -75.580708 },
+          zoom: 13,
+        });
+        const contentString =
+    '<div id="content">' +
+    '<div id="siteNotice">' +
+    "</div>" +
+    '<h1 id="firstHeading" class="firstHeading">Ürün Dağıtım Merkezi</h1>' +
+    '<div id="bodyContent">' +
+    "<p>Öncelik Sırası: 1, Çeşidi: Sağlık Malzemesi, Elinizdeki Stok: 100</p>" +
+    "<p>Öncelik Sırası: 2, Çeşidi: Temel Gıda, Elinizdeki Stok: 100</p>"+
+    "<p>Öncelik Sırası: 3, Çeşidi: Isınma Gereci, Elinizdeki Stok: 70</p>"+
+    "<p>Öncelik Sırası: 4, Çeşidi: Giyecek, Elinizdeki Stok: 70</p>"+
+    "</div>" +
+    "</div>";
+
+const infowindow = new google.maps.InfoWindow({
+    content: contentString,
+    ariaLabel: "Ürün Dağıtım Merkezi",
+});
+
+const centerMarker = new google.maps.Marker({
+    position: { lat: 6.249495, lng: -75.580708 },
+    map: map,
+    title: "Ürün Dağıtım Merkezi",
+});
+
+centerMarker.addListener("click", () => {
+    infowindow.open(map, centerMarker);
+});
+
+        let path = [];
+        // adding polyline for center to first location
+        path.push(centerMarker.getPosition());
+        path.push(locations[0]);
+        const centerToFirst = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: "#0000FF",
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+        centerToFirst.setMap(map);
+        path = [];
+        for (let i = 0; i < locations.length; i++) {
+          const marker = new google.maps.Marker({
+            position: locations[i],
+            map: map,
+            label: (i+1).toString(),
+          });
+          const contentString = 'Konum ' + (i+1).toString();
+          const infowindow = new google.maps.InfoWindow({
+            content: contentString,
+          });
+          marker.addListener("click", () => {
+            infowindow.open(map, marker);
+          });
+          path.push(locations[i]);
+          const polyline = new google.maps.Polyline({
+            path: path,
+            geodesic: true,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          });
+          polyline.setMap(map);
+        }
+      }
+    </script>
+    <style>
+      #map {
+        height: 700px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBim-e8ACNnGEDBB6skS285NZJ9uGbAYyY&callback=initMap"></script>
+  </body>
+</html>
